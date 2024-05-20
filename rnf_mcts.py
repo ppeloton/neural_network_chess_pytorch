@@ -1,6 +1,7 @@
 import copy
 import numpy as np
 import math
+import torch.nn as nn
 
 from common.game import Board
 import random
@@ -33,7 +34,8 @@ class Node():
         prob_sum = 0.
         for (edge,_) in self.childEdgeNode:
             m_idx = self.board.getNetworkOutputIndex(edge.move)
-            edge.P = torch.exp(q[0][0][m_idx]).item()
+            # edge.P = q[0][0][m_idx].item()
+            edge.P = nn.Softmax(dim=0)(q[0][0])[m_idx].item()
             prob_sum += edge.P
         for edge,_ in self.childEdgeNode:
             edge.P /= prob_sum
