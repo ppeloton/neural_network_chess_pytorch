@@ -4,6 +4,7 @@ import torch
 from common import game
 import random
 import numpy as np
+import torch.nn as nn
 
 
 model = common.SupNetwork()
@@ -29,7 +30,7 @@ def net_vs_rand(board):
             masked_output = [ 0 for x in range(0,28)]
             for m in board.generateMoves():
                 m_idx = board.getNetworkOutputIndex(m)
-                masked_output[m_idx] = torch.exp(q[0][0][m_idx]).item()
+                masked_output[m_idx] = nn.Softmax(dim=0)(q[0][0])[m_idx].item()
             best_idx = np.argmax(masked_output)
             sel_move = None
             for m in board.generateMoves():
@@ -52,7 +53,6 @@ def rand_vs_rand(board):
         continue
     terminal, winner = board.isTerminal()
     return winner
-
 
 whiteWins = 0
 blackWins = 0
